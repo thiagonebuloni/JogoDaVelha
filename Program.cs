@@ -15,17 +15,39 @@
         }
 
 
-        private static void Jogar(List<string> jogadores, List<int> pontuacao)
+        private static void Jogar(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
         {
             Console.Clear();
+
+            int indexJogadorAtivo1 = 0;
+            int indexJogadorAtivo2 = 1;
+
             if (jogadores.Count() == 0) {
                 
                 jogadores.Add("Jogador 1");
                 pontuacao.Add(0);
                 jogadores.Add("Jogador 2");
                 pontuacao.Add(0);
+                jogadoresRankeados.Add("Jogador 1");
+                pontuacaoRankeados.Add(0);
+                jogadoresRankeados.Add("Jogador 2");
+                pontuacaoRankeados.Add(0);
+                // exibe jogadores para selecionar
+                Console.Clear();
             }
-            
+            else {
+                for (int i = 0; i < jogadores.Count(); i++) {
+                    if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    else Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{i + 1} - {jogadores[i]}");
+                }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("Selecione o jogador 1: ");
+                indexJogadorAtivo1 = (int.Parse(Console.ReadLine()) - 1);
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("Selecione o jogador 2: ");
+                indexJogadorAtivo2 = (int.Parse(Console.ReadLine()) - 1);
+            }
             
             string[,] posicoes = new string[3,3];
             
@@ -45,33 +67,38 @@
                 // laço para impedir selecionar mesma casa
                 do {
                     MostraTabuleiroAtual(posicoes);
-                    Console.Write($"\n{jogadorTurno}, escolha um número: ");
-                    jogadaAtual = int.Parse(Console.ReadLine());
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    if (jogadorTurno == "X") Console.Write($"\n{jogadores[indexJogadorAtivo1]} [{jogadorTurno}], escolha um número: ");
+                    else Console.Write($"\n{jogadores[indexJogadorAtivo2]} [{jogadorTurno}], escolha um número: ");
+                    try {
+                        jogadaAtual = int.Parse(Console.ReadLine());
+                    }
+                    catch (Exception e) {
+                        Cores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
+                        Console.ReadKey();
+                        continue;
+                    }
                 } while (!ValidaJogada(posicoes, jogadaAtual, jogadorTurno));
 
-                
-                // valida se existe um vencedor
-                int validaJogo = ValidaJogo(posicoes);
-                Console.WriteLine(validaJogo);
-                Console.ReadKey();
-                if (validaJogo == 1) {
+
+                if (ValidaJogo(posicoes) == -1) {
+                    MostraTabuleiroAtual(posicoes);
+                    Cores("\nIh deu velha!", ConsoleColor.Red);
+                    Console.ReadKey();
+                    break;
+                }
+                else if (ValidaJogo(posicoes) == 1) {
                     MostraTabuleiroAtual(posicoes);
                     if (jogadorTurno == "X") {
-                        pontuacao[0]++;
-                        Console.WriteLine($"\n{jogadores[0]} venceu!!");
+                        pontuacao[indexJogadorAtivo1]++;
+                        Console.WriteLine($"\n{jogadores[indexJogadorAtivo1]} venceu!!");
                         Console.ReadKey();
                     }
                     else {
-                        pontuacao[1]++;
-                        Console.WriteLine($"\n{jogadores[1]} venceu!!");
+                        pontuacao[indexJogadorAtivo2]++;
+                        Console.WriteLine($"\n{jogadores[indexJogadorAtivo2]} venceu!!");
                         Console.ReadKey();
                     }
-                    break;
-                }
-                else if (validaJogo == -1) {
-                    MostraTabuleiroAtual(posicoes);
-                    Console.WriteLine("Ih deu velha!");
-                    Console.ReadKey();
                     break;
                 }
 
@@ -84,17 +111,20 @@
         private static bool Empate(string[,] posicoes)
         {
             for (int i = 0; i < 3; i++) {
-                for (int j = 0; i < 3; j++) {
-                    if (posicoes[i,j] != "_X_" || posicoes[i,j] != "_O_") return false;
+                for (int j = 0; j < 3; j++) {
+                    if (posicoes[i,j] != "_X_" && posicoes[i,j] != "_O_") {
+                        return false;
+                    }
                 }
             }
+            Console.WriteLine("EMPATADO");
             return true;
         }
 
         private static bool ValidaJogada(string[,] posicoes, int jogadaAtual, string jogadorTurno)
         {
             if (jogadaAtual > 9 || jogadaAtual < 1) {
-                Console.WriteLine("Escolha entre 1 e 9 apenas");
+                Cores("Escolha entre 1 e 9 apenas. Aperte Enter para tentar novamente.", ConsoleColor.Red);
                 Console.ReadKey();
                 return false;
             }
@@ -102,13 +132,13 @@
             int contador = 1;
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (contador == jogadaAtual) {      // preenche casa escolhida
+                    if (contador == jogadaAtual) {      // valida casa já preenchida
                         if (posicoes[i,j] == "_X_" || posicoes[i,j] == "_O_") {
-                            Console.WriteLine("Não é possível escolher essa casa, ela já está selecionada. \nTente novamente");
+                            Cores("Não é possível escolher essa casa, ela já está selecionada. \nAperte Enter para tentar novamente", ConsoleColor.Red);
                             Console.ReadKey();
                             return false;
                         }
-                        else {
+                        else {                          // preenche casa escolhida
                             posicoes[i,j] = $"_{jogadorTurno}_";
                             return true;
                         }                            
@@ -168,7 +198,7 @@
             Console.ResetColor();
         }
 
-        private static void RegistrarUsuario(List<string> jogadores, List<int> pontuacao)
+        private static void RegistrarUsuario(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
         {
             Console.Clear();
             Console.Write("Quer dar um nome para o seu usuário? [S/N] ");
@@ -178,8 +208,16 @@
             {
                 Console.Write("Qual é o nome? ");
                 string nomeJogador = Console.ReadLine();
-                jogadores.Add(nomeJogador);
-                pontuacao.Add(0);
+                if (string.IsNullOrEmpty(nomeJogador)) {
+                    jogadores.Add($"Jogador {jogadores.Count() + 1}");
+                    pontuacao.Add(0);
+                }
+                else {
+                    jogadores.Add(nomeJogador);
+                    pontuacao.Add(0);
+                    jogadoresRankeados.Add(nomeJogador);
+                    pontuacaoRankeados.Add(0);
+                }
             }
             else {
                 jogadores.Add($"Jogador {jogadores.Count() + 1}");
@@ -189,15 +227,58 @@
         }
 
 
-        private static void VerRanking(List<string> jogadores, List<int> pontuacao)
+        private static void VerRanking(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
         {
-            Console.Clear();
-            Console.WriteLine("\nJogadores\t| Pontuação");
-            Console.WriteLine("==========================="); // Green
+            // limpa lista rankeados e copia dados de jogadores
+            jogadoresRankeados.Clear();
+            pontuacaoRankeados.Clear();
+            jogadoresRankeados.AddRange(jogadores);
+            pontuacaoRankeados.AddRange(pontuacao);
 
-            for (int i = 0; i < jogadores.Count(); i++) {
-                Console.WriteLine($"{jogadores[i]}\t| {pontuacao[i]}");
+            // ordena jogadores
+            for (int i = 0; i < jogadores.Count() - 1; i++) {
+                for (int j = 1; j < jogadores.Count(); j++) {
+                    if (pontuacaoRankeados[i] < pontuacaoRankeados[j]) {
+                        string tempJogador = jogadoresRankeados[j];
+                        jogadoresRankeados[j] = jogadoresRankeados[i];
+                        jogadoresRankeados[i] = tempJogador;
+
+                        int tempPontuacao = pontuacaoRankeados[j];
+                        pontuacaoRankeados[j] = pontuacaoRankeados[i];
+                        pontuacaoRankeados[i] = tempPontuacao;
+                    }
+                }
             }
+
+            // tenta definir a distância entre campos da tabela com base no comprimento dos nomes dos jogadores
+            string tab = "\t";
+            Console.Clear();
+            for (int i = 0; i < jogadores.Count(); i++) {
+                if (jogadores[i].Length > 7) {
+                    tab += "\t";
+                    break;
+                }
+            }
+            Console.WriteLine("\nJogadores" + tab + "| Pontuação");
+            Console.WriteLine("======================================");
+
+            for (int i = 0; i < jogadoresRankeados.Count(); i++) {
+                // alterna cores na tabela
+                if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
+                else Console.ForegroundColor = ConsoleColor.Green;
+
+                if (jogadoresRankeados[i].Length > 14) {
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}");
+                }
+                else if (jogadoresRankeados[i].Length < 8){
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}");
+                }
+                else {
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}");
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("");
             Console.WriteLine("\nPressione qualquer tecla para continuar...");
             Console.ReadKey();
         }        
@@ -208,25 +289,39 @@
             // Criando listas de usuários
             List<string> jogadores = new List<string>();
             List<int> pontuacao = new List<int>();
+            List<string> jogadoresRankeados = new List<string>();
+            List<int> pontuacaoRankeados = new List<int>();
 
             int option = 1;
             do {
                 ShowMenu();
                 Console.Write("O que você quer fazer? ");
-                option = int.Parse(Console.ReadLine());
+                    try {
+                        option = int.Parse(Console.ReadLine());
+                    }
+                    catch (Exception e) {
+                        Cores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
+                        Console.ReadKey();
+                        continue;
+                    }
 
                 switch (option){
                     case 0:
                         break;
                     case 1:
-                        Jogar(jogadores, pontuacao);
+                        Jogar(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
                         break;
                     case 2:
-                        RegistrarUsuario(jogadores, pontuacao);
+                        RegistrarUsuario(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
                         break;
                     case 3:
-                        VerRanking(jogadores, pontuacao);
+                        VerRanking(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
                         break;
+                    default:
+                        Cores("Opção inválida. Aperte enter para tentar novamente.", ConsoleColor.Red);
+                        Console.ReadKey();
+                        break;
+
                 }
                     
 
