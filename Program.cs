@@ -15,27 +15,32 @@
         }
 
 
-        private static void Jogar(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
+        private static void Jogar(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados)
         {
             Console.Clear();
 
             int indexJogadorAtivo1 = 0;
             int indexJogadorAtivo2 = 1;
 
+            // se não existirem jogadores registrados, cria 2 novos
             if (jogadores.Count() == 0) {
                 
                 jogadores.Add("Jogador 1");
                 pontuacao.Add(0);
+                empates.Add(0);
+                derrotas.Add(0);
                 jogadores.Add("Jogador 2");
                 pontuacao.Add(0);
-                jogadoresRankeados.Add("Jogador 1");
-                pontuacaoRankeados.Add(0);
-                jogadoresRankeados.Add("Jogador 2");
-                pontuacaoRankeados.Add(0);
-                // exibe jogadores para selecionar
-                Console.Clear();
+                empates.Add(0);
+                derrotas.Add(0);
             }
-            else {
+            else if ( jogadores.Count() == 1) { // se existir apenas 1 jogador criado, cria o segundo
+                jogadores.Add($"Jogador {jogadores.Count() + 1}");
+                pontuacao.Add(0);
+                empates.Add(0);
+                derrotas.Add(0);
+            }
+            else {      // seleciona jogadores já cadastrados
                 for (int i = 0; i < jogadores.Count(); i++) {
                     if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
                     else Console.ForegroundColor = ConsoleColor.Green;
@@ -49,6 +54,7 @@
                 indexJogadorAtivo2 = (int.Parse(Console.ReadLine()) - 1);
             }
             
+            // cria e popula posicoes de 1 a 9
             string[,] posicoes = new string[3,3];
             
             int contador = 1;
@@ -59,7 +65,6 @@
                 }
             }
             
-            // bool valendoo = true;
             string jogadorTurno = "X";
             int jogadaAtual = 0;
 
@@ -80,22 +85,26 @@
                     }
                 } while (!ValidaJogada(posicoes, jogadaAtual, jogadorTurno));
 
-
+                // se empatado incrementa quantidade para cada jogador.
                 if (ValidaJogo(posicoes) == -1) {
+                    empates[indexJogadorAtivo1]++;
+                    empates[indexJogadorAtivo2]++;
                     MostraTabuleiroAtual(posicoes);
                     Cores("\nIh deu velha!", ConsoleColor.Red);
                     Console.ReadKey();
                     break;
                 }
-                else if (ValidaJogo(posicoes) == 1) {
+                else if (ValidaJogo(posicoes) == 1) {       // se jogador 1 ganhar
                     MostraTabuleiroAtual(posicoes);
                     if (jogadorTurno == "X") {
                         pontuacao[indexJogadorAtivo1]++;
+                        derrotas[indexJogadorAtivo2]++;
                         Console.WriteLine($"\n{jogadores[indexJogadorAtivo1]} venceu!!");
                         Console.ReadKey();
                     }
-                    else {
+                    else {                                  // se jogador 2 ganhar
                         pontuacao[indexJogadorAtivo2]++;
+                        derrotas[indexJogadorAtivo1]++;
                         Console.WriteLine($"\n{jogadores[indexJogadorAtivo2]} venceu!!");
                         Console.ReadKey();
                     }
@@ -198,7 +207,7 @@
             Console.ResetColor();
         }
 
-        private static void RegistrarUsuario(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
+        private static void RegistrarUsuario(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados)
         {
             Console.Clear();
             Console.Write("Quer dar um nome para o seu usuário? [S/N] ");
@@ -211,29 +220,34 @@
                 if (string.IsNullOrEmpty(nomeJogador)) {
                     jogadores.Add($"Jogador {jogadores.Count() + 1}");
                     pontuacao.Add(0);
+                    empates.Add(0);
                 }
                 else {
                     jogadores.Add(nomeJogador);
                     pontuacao.Add(0);
-                    jogadoresRankeados.Add(nomeJogador);
-                    pontuacaoRankeados.Add(0);
+                    empates.Add(0);
                 }
             }
             else {
                 jogadores.Add($"Jogador {jogadores.Count() + 1}");
                 pontuacao.Add(0);
+                empates.Add(0);
 
             }
         }
 
 
-        private static void VerRanking(List<string> jogadores, List<int> pontuacao, List<string> jogadoresRankeados, List<int> pontuacaoRankeados)
+        private static void VerRanking(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados)
         {
             // limpa lista rankeados e copia dados de jogadores
             jogadoresRankeados.Clear();
             pontuacaoRankeados.Clear();
+            empatesRankeados.Clear();
+            derrotasRankeados.Clear();
             jogadoresRankeados.AddRange(jogadores);
             pontuacaoRankeados.AddRange(pontuacao);
+            empatesRankeados.AddRange(empates);
+            derrotasRankeados.AddRange(derrotas);
 
             // ordena jogadores
             for (int i = 0; i < jogadores.Count() - 1; i++) {
@@ -246,6 +260,14 @@
                         int tempPontuacao = pontuacaoRankeados[j];
                         pontuacaoRankeados[j] = pontuacaoRankeados[i];
                         pontuacaoRankeados[i] = tempPontuacao;
+
+                        int tempEmpates = empatesRankeados[j];
+                        empatesRankeados[j] = empatesRankeados[i];
+                        empatesRankeados[i] = tempEmpates;
+
+                        int tempDerrotas = derrotasRankeados[j];
+                        derrotasRankeados[j] = derrotasRankeados[i];
+                        derrotasRankeados[i] = tempDerrotas;
                     }
                 }
             }
@@ -259,8 +281,8 @@
                     break;
                 }
             }
-            Console.WriteLine("\nJogadores" + tab + "| Pontuação");
-            Console.WriteLine("======================================");
+            Console.WriteLine("\nJogadores" + tab + "| Vitórias\t| Derrotas\t| Empates");
+            Console.WriteLine("=================================================================");
 
             for (int i = 0; i < jogadoresRankeados.Count(); i++) {
                 // alterna cores na tabela
@@ -268,13 +290,13 @@
                 else Console.ForegroundColor = ConsoleColor.Green;
 
                 if (jogadoresRankeados[i].Length > 14) {
-                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}");
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}\t| {derrotasRankeados[i]}\t| {empatesRankeados[i]}");
                 }
                 else if (jogadoresRankeados[i].Length < 8){
-                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}");
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}\t| {derrotasRankeados[i]}\t| {empatesRankeados[i]}");
                 }
                 else {
-                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}");
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}{tab}| {derrotasRankeados[i]}{tab}| {empatesRankeados[i]}");
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
@@ -289,8 +311,14 @@
             // Criando listas de usuários
             List<string> jogadores = new List<string>();
             List<int> pontuacao = new List<int>();
+            List<int> empates = new List<int>();
             List<string> jogadoresRankeados = new List<string>();
             List<int> pontuacaoRankeados = new List<int>();
+            List<int> empatesRankeados = new List<int>();
+            List<int> derrotas = new List<int>();
+            List<int> derrotasRankeados = new List<int>();
+
+            // cria arquivo json 
 
             int option = 1;
             do {
@@ -309,19 +337,18 @@
                     case 0:
                         break;
                     case 1:
-                        Jogar(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
+                        Jogar(jogadores, pontuacao, empates, derrotas, jogadoresRankeados, pontuacaoRankeados, empatesRankeados, derrotasRankeados);
                         break;
                     case 2:
-                        RegistrarUsuario(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
+                        RegistrarUsuario(jogadores, pontuacao, empates, derrotas, jogadoresRankeados, pontuacaoRankeados, empatesRankeados, derrotasRankeados);
                         break;
                     case 3:
-                        VerRanking(jogadores, pontuacao, jogadoresRankeados, pontuacaoRankeados);
+                        VerRanking(jogadores, pontuacao, empates, derrotas, jogadoresRankeados, pontuacaoRankeados, empatesRankeados, derrotasRankeados);
                         break;
                     default:
                         Cores("Opção inválida. Aperte enter para tentar novamente.", ConsoleColor.Red);
                         Console.ReadKey();
                         break;
-
                 }
                     
 
