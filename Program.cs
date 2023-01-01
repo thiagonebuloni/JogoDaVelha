@@ -1,4 +1,6 @@
-﻿namespace JogoDaVelha {
+﻿using System.IO;
+
+namespace JogoDaVelha {
 
     class Program {
 
@@ -15,6 +17,98 @@
         }
 
 
+        private static void CriaArquivo (List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas) {
+            string path = @"data/";
+            string file = @"ranking.txt";
+            string fullPath = System.IO.Path.Combine(path, file);
+
+            try {
+                if (!System.IO.Directory.Exists(path)) {
+                    System.IO.Directory.CreateDirectory(path);
+                }
+                if (!System.IO.File.Exists(file)) {
+                    using (StreamWriter sw = new StreamWriter(fullPath)) {
+                        sw.WriteLine("-===_____RANKING_____===-");
+                    }
+                }
+                string ranking = "";
+                if (System.IO.File.Exists(file)){
+                    using (StreamReader sr = new StreamReader(file)) 
+                    using (StreamWriter sw = new StreamWriter(file)) {
+                        String line = sr.ReadLine();
+                        ranking = sr.ReadToEnd();
+                        sr.Close();
+                    }
+                }
+            }
+            catch (Exception e) {
+                string log = @"log.txt";
+                if (!System.IO.File.Exists(log)) {
+                    using (StreamWriter sw = new StreamWriter(log)) {
+                        sw.WriteLine(e.Message);
+                    }
+                }
+                else {
+                    using (StreamWriter swa = File.AppendText(log)) {
+                        swa.WriteLine(e.Message);
+                    }
+                }
+            }
+        }
+
+        private static void AtualizarArquivo(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados) {
+            string path = @"data/";
+            string file = @"ranking.txt";
+            string fullPath = System.IO.Path.Combine(path, file);
+
+            // try {
+                if (System.IO.File.Exists(fullPath)) {
+                    using (StreamWriter sw = new StreamWriter(fullPath)) {
+                        sw.WriteLine("-===_____RANKING_____===-");
+                        
+                        // tenta definir a distância entre campos da tabela com base no comprimento dos nomes dos jogadores
+                        string tab = "\t";
+                        for (int i = 0; i < jogadores.Count(); i++) {
+                            if (jogadores[i].Length > 7) {
+                                tab += "\t";
+                                break;
+                            }
+                        }
+                        sw.WriteLine("\n\nJogadores " + tab + "| Vitórias\t| Derrotas\t| Empates");
+                        sw.WriteLine("=================================================================");
+                        // sw.WriteLine($"{derrotasRankeados[0]} | {empatesRankeados}");
+                        // sw.WriteLine(jogadoresRankeados[1]);
+                           
+                        for (int i = 0; i < jogadoresRankeados.Count(); i++) {
+                            if (jogadoresRankeados[i].Length > 14) {
+                                sw.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}\t| {derrotasRankeados[i]}\t| {empatesRankeados[i]}");
+                            }
+                            else if (jogadoresRankeados[i].Length < 8) {
+                                sw.WriteLine($"{jogadoresRankeados[i]}{tab}{tab}| {pontuacaoRankeados[i]}\t\t| {derrotasRankeados[i]}\t\t| {empatesRankeados[i]}");
+                            }
+                            else {
+                                sw.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}{tab}| {derrotasRankeados[i]}{tab}| {empatesRankeados[i]}");
+                            }
+                        }
+                    }
+                }
+            // }
+            // catch (Exception e) {
+                // string log = @"log.txt";
+                // if (!System.IO.File.Exists(log)) {
+                //     using (StreamWriter sw = new StreamWriter(log)) {
+                //         sw.WriteLine(e.Message);
+                //     }
+                // }
+                // else {
+                //     using (StreamWriter sw = File.AppendText(log)) {
+                //         sw.WriteLine(e.Message);
+                //     }
+                // }
+            // }
+        }
+
+
         private static void Jogar(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados)
         {
             Console.Clear();
@@ -25,17 +119,17 @@
             // se não existirem jogadores registrados, cria 2 novos
             if (jogadores.Count() == 0) {
                 
-                jogadores.Add("Jogador 1");
+                jogadores.Add("Jogador(a) 1");
                 pontuacao.Add(0);
                 empates.Add(0);
                 derrotas.Add(0);
-                jogadores.Add("Jogador 2");
+                jogadores.Add("Jogador(a) 2");
                 pontuacao.Add(0);
                 empates.Add(0);
                 derrotas.Add(0);
             }
             else if ( jogadores.Count() == 1) { // se existir apenas 1 jogador criado, cria o segundo
-                jogadores.Add($"Jogador {jogadores.Count() + 1}");
+                jogadores.Add($"Jogador(a) {jogadores.Count() + 1}");
                 pontuacao.Add(0);
                 empates.Add(0);
                 derrotas.Add(0);
@@ -47,12 +141,14 @@
                     Console.WriteLine($"{i + 1} - {jogadores[i]}");
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Selecione o jogador 1: ");
+                Console.Write("Selecione o jogador(a) 1: ");
                 indexJogadorAtivo1 = (int.Parse(Console.ReadLine()) - 1);
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write("Selecione o jogador 2: ");
+                Console.Write("Selecione o jogador(a) 2: ");
                 indexJogadorAtivo2 = (int.Parse(Console.ReadLine()) - 1);
             }
+
+            CriaArquivo(jogadores, pontuacao, empates, derrotas);
             
             // cria e popula posicoes de 1 a 9
             string[,] posicoes = new string[3,3];
@@ -115,6 +211,21 @@
                 if (jogadorTurno == "X") jogadorTurno = "O";
                 else jogadorTurno = "X";
             }
+
+            // limpa lista rankeados e copia dados de jogadores
+            jogadoresRankeados.Clear();
+            pontuacaoRankeados.Clear();
+            derrotasRankeados.Clear();
+            empatesRankeados.Clear();
+            jogadoresRankeados.AddRange(jogadores);
+            pontuacaoRankeados.AddRange(pontuacao);
+            derrotasRankeados.AddRange(derrotas);
+            empatesRankeados.AddRange(empates);
+
+
+            AtualizarArquivo(jogadores, pontuacao, empates, derrotas, jogadoresRankeados, pontuacaoRankeados, empatesRankeados, derrotasRankeados);
+
+            
         }
 
         private static bool Empate(string[,] posicoes)
@@ -126,7 +237,6 @@
                     }
                 }
             }
-            Console.WriteLine("EMPATADO");
             return true;
         }
 
@@ -218,20 +328,23 @@
                 Console.Write("Qual é o nome? ");
                 string nomeJogador = Console.ReadLine();
                 if (string.IsNullOrEmpty(nomeJogador)) {
-                    jogadores.Add($"Jogador {jogadores.Count() + 1}");
+                    jogadores.Add($"Jogador(a) {jogadores.Count() + 1}");
                     pontuacao.Add(0);
                     empates.Add(0);
+                    derrotas.Add(0);
                 }
                 else {
                     jogadores.Add(nomeJogador);
                     pontuacao.Add(0);
                     empates.Add(0);
+                    derrotas.Add(0);
                 }
             }
             else {
-                jogadores.Add($"Jogador {jogadores.Count() + 1}");
+                jogadores.Add($"Jogador(a) {jogadores.Count() + 1}");
                 pontuacao.Add(0);
                 empates.Add(0);
+                derrotas.Add(0);
 
             }
         }
@@ -239,19 +352,10 @@
 
         private static void VerRanking(List<string> jogadores, List<int> pontuacao, List<int> empates, List<int> derrotas, List<string> jogadoresRankeados, List<int> pontuacaoRankeados, List<int> empatesRankeados, List<int> derrotasRankeados)
         {
-            // limpa lista rankeados e copia dados de jogadores
-            jogadoresRankeados.Clear();
-            pontuacaoRankeados.Clear();
-            empatesRankeados.Clear();
-            derrotasRankeados.Clear();
-            jogadoresRankeados.AddRange(jogadores);
-            pontuacaoRankeados.AddRange(pontuacao);
-            empatesRankeados.AddRange(empates);
-            derrotasRankeados.AddRange(derrotas);
-
+            
             // ordena jogadores
-            for (int i = 0; i < jogadores.Count() - 1; i++) {
-                for (int j = 1; j < jogadores.Count(); j++) {
+            for (int i = 0; i < jogadoresRankeados.Count() - 1; i++) {
+                for (int j = 1; j < jogadoresRankeados.Count(); j++) {
                     if (pontuacaoRankeados[i] < pontuacaoRankeados[j]) {
                         string tempJogador = jogadoresRankeados[j];
                         jogadoresRankeados[j] = jogadoresRankeados[i];
@@ -293,7 +397,7 @@
                     Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}\t| {derrotasRankeados[i]}\t| {empatesRankeados[i]}");
                 }
                 else if (jogadoresRankeados[i].Length < 8){
-                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}\t| {derrotasRankeados[i]}\t| {empatesRankeados[i]}");
+                    Console.WriteLine($"{jogadoresRankeados[i]}{tab}\t| {pontuacaoRankeados[i]}\t\t| {derrotasRankeados[i]}\t\t| {empatesRankeados[i]}");
                 }
                 else {
                     Console.WriteLine($"{jogadoresRankeados[i]}{tab}| {pontuacaoRankeados[i]}{tab}| {derrotasRankeados[i]}{tab}| {empatesRankeados[i]}");
@@ -312,10 +416,10 @@
             List<string> jogadores = new List<string>();
             List<int> pontuacao = new List<int>();
             List<int> empates = new List<int>();
+            List<int> derrotas = new List<int>();
             List<string> jogadoresRankeados = new List<string>();
             List<int> pontuacaoRankeados = new List<int>();
             List<int> empatesRankeados = new List<int>();
-            List<int> derrotas = new List<int>();
             List<int> derrotasRankeados = new List<int>();
 
             // cria arquivo json 
