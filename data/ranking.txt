@@ -1,1 +1,1 @@
-541351|0|1|0
+[{"NomeJogador":"Jogador(a) 2","Vitorias":1,"Derrotas":0,"Empates":1},{"NomeJogador":"Jogador(a) 1","Vitorias":0,"Derrotas":1,"Empates":1},{"NomeJogador":"Thiago Nebuloni","Vitorias":1,"Derrotas":1,"Empates":1},{"NomeJogador":"Maria Venegas","Vitorias":1,"Derrotas":1,"Empates":1}]

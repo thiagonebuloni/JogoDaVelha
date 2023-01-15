@@ -412,22 +412,19 @@ namespace JogoDaVelha {
 
 
             // Criando listas de usuários
-            List<Jogador> jogadores = new List<Jogador>();
+            List<Jogador> jogadores = new List<Jogador>();            
 
-            // List<string> jogadoresRankeados = new List<string>();
-            // List<int> pontuacaoRankeados = new List<int>();
-            // List<int> empatesRankeados = new List<int>();
-            // List<int> derrotasRankeados = new List<int>();
-
+            string path = @"data/";
+            string file = @"ranking.txt";
+            string fullPath = System.IO.Path.Combine(path, file);
             
-
-            // ManipulaArquivo.LeArquivo(jogadores, pontuacao, empates, derrotas);
+            ManipulaArquivo.LeArquivo(jogadores, fullPath);
 
 
             int option = 1;
             do
             {
-                Interface.ShowMenu();
+                Interface.IShowMenu();
                 Console.Write("O que você quer fazer? ");
                     try
                     {
@@ -435,7 +432,7 @@ namespace JogoDaVelha {
                     }
                     catch (Exception)
                     {
-                        Interface.Cores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
+                        Interface.ICores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
                         Console.ReadKey();
                         continue;
                     }
@@ -450,10 +447,10 @@ namespace JogoDaVelha {
                         Jogador.RegistrarJogador(jogadores);
                         break;
                     case 3:
-                        Interface.VerRanking(jogadores);
+                        Interface.IVerRanking(jogadores);
                         break;
                     default:
-                        Interface.Cores("Opção inválida. Aperte enter para tentar novamente.", ConsoleColor.Red);
+                        Interface.ICores("Opção inválida. Aperte enter para tentar novamente.", ConsoleColor.Red);
                         Console.ReadKey();
                         break;
                 }

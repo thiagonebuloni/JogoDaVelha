@@ -2,7 +2,7 @@ namespace JogoDaVelha.Utils {
 
     public class Interface {
 
-        public static void ShowMenu()
+        public static void IShowMenu()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
@@ -14,7 +14,7 @@ namespace JogoDaVelha.Utils {
         }
 
 
-        public static void Cores(string txt, ConsoleColor color) {
+        public static void ICores(string txt, ConsoleColor color) {
             // printa texto na cor selecionada e reseta para cor padrão
             Console.ForegroundColor = color;
             Console.Write(txt);
@@ -22,7 +22,7 @@ namespace JogoDaVelha.Utils {
         }
 
 
-        public static void VerRanking(List<Jogador> jogadores) {
+        public static void IVerRanking(List<Jogador> jogadores) {
             
             // ordena jogadores
 
@@ -60,7 +60,7 @@ namespace JogoDaVelha.Utils {
         }
 
 
-        public static void MostraTabuleiroAtual(string[,] posicoes)
+        public static void IMostraTabuleiroAtual(string[,] posicoes)
         {   
             Console.Clear();
             Console.WriteLine("");
@@ -68,10 +68,10 @@ namespace JogoDaVelha.Utils {
             for (int i = 0; i < 3; i++) {
                 Console.Write(" ");
                 for (int j = 0; j < 3; j++) {
-                    if (posicoes[i,j] == "_X_") Interface.Cores($"{posicoes[i,j]}", ConsoleColor.DarkBlue);
-                    else if (posicoes[i,j] == "_O_") Interface.Cores($"{posicoes[i,j]}", ConsoleColor.DarkRed);
-                    else Interface.Cores($"{posicoes[i,j]}", ConsoleColor.DarkGreen);
-                    if (j != 2) Interface.Cores("|", ConsoleColor.DarkGreen);
+                    if (posicoes[i,j] == "_X_") Interface.ICores($"{posicoes[i,j]}", ConsoleColor.DarkBlue);
+                    else if (posicoes[i,j] == "_O_") Interface.ICores($"{posicoes[i,j]}", ConsoleColor.DarkRed);
+                    else Interface.ICores($"{posicoes[i,j]}", ConsoleColor.DarkGreen);
+                    if (j != 2) Interface.ICores("|", ConsoleColor.DarkGreen);
                 }
                 Console.WriteLine("");
             }

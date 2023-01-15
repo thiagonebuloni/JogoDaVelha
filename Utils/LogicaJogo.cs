@@ -55,15 +55,15 @@ namespace JogoDaVelha.Utils {
             while (true) {
                 // laço para impedir selecionar mesma casa
                 do {
-                    Interface.MostraTabuleiroAtual(posicoes);
+                    Interface.IMostraTabuleiroAtual(posicoes);
 
-                    if (jogadorTurno == "X") Interface.Cores($"\n{jogadores[indexJogadorAtivo1].NomeJogador} [{jogadorTurno}], escolha um número: ", ConsoleColor.Blue);
-                    else Interface.Cores($"\n{jogadores[indexJogadorAtivo2].NomeJogador} [{jogadorTurno}], escolha um número: ", ConsoleColor.Red);
+                    if (jogadorTurno == "X") Interface.ICores($"\n{jogadores[indexJogadorAtivo1].NomeJogador} [{jogadorTurno}], escolha um número: ", ConsoleColor.Blue);
+                    else Interface.ICores($"\n{jogadores[indexJogadorAtivo2].NomeJogador} [{jogadorTurno}], escolha um número: ", ConsoleColor.Red);
                     try {
                         jogadaAtual = int.Parse(Console.ReadLine()!);
                     }
                     catch (Exception) {
-                        Interface.Cores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
+                        Interface.ICores("Opção inválida. Aperte Enter para tentar novamente.", ConsoleColor.Red);
                         Console.ReadKey();
                         continue;
                     }
@@ -74,23 +74,23 @@ namespace JogoDaVelha.Utils {
                 if (resultado == -1) {
                     jogadores[indexJogadorAtivo1].IncrementaEmpates();
                     jogadores[indexJogadorAtivo2].IncrementaEmpates();
-                    Interface.MostraTabuleiroAtual(posicoes);
-                    Interface.Cores("\nIh deu velha!", ConsoleColor.Red);
+                    Interface.IMostraTabuleiroAtual(posicoes);
+                    Interface.ICores("\nIh deu velha!", ConsoleColor.Red);
                     Console.ReadKey();
                     break;
                 }
                 else if (resultado == 1) { 
-                    Interface.MostraTabuleiroAtual(posicoes);
+                    Interface.IMostraTabuleiroAtual(posicoes);
                     if (jogadorTurno == "X") {              // se jogador 1 ganhar
                         jogadores[indexJogadorAtivo1].IncrementaVitorias();
                         jogadores[indexJogadorAtivo2].IncrementaDerrotas();
-                        Interface.Cores($"\n{jogadores[indexJogadorAtivo1].NomeJogador} venceu!!", ConsoleColor.Blue);
+                        Interface.ICores($"\n{jogadores[indexJogadorAtivo1].NomeJogador} venceu!!", ConsoleColor.Blue);
                         Console.ReadKey();
                     }
                     else {                                  // se jogador 2 ganhar
                         jogadores[indexJogadorAtivo2].IncrementaVitorias();
                         jogadores[indexJogadorAtivo1].IncrementaDerrotas();
-                        Interface.Cores($"\n{jogadores[indexJogadorAtivo2].NomeJogador} venceu!!", ConsoleColor.Red);
+                        Interface.ICores($"\n{jogadores[indexJogadorAtivo2].NomeJogador} venceu!!", ConsoleColor.Red);
                         Console.ReadKey();
                     }
                     break;
@@ -126,7 +126,7 @@ namespace JogoDaVelha.Utils {
         private static bool ValidaJogada(string[,] posicoes, int jogadaAtual, string jogadorTurno)
         {
             if (jogadaAtual > 9 || jogadaAtual < 1) {
-                Interface.Cores("Escolha entre 1 e 9 apenas. Aperte Enter para tentar novamente.", ConsoleColor.Red);
+                Interface.ICores("Escolha entre 1 e 9 apenas. Aperte Enter para tentar novamente.", ConsoleColor.Red);
                 Console.ReadKey();
                 return false;
             }
@@ -136,7 +136,7 @@ namespace JogoDaVelha.Utils {
                 for (int j = 0; j < 3; j++) {
                     if (contador == jogadaAtual) {      // valida casa já preenchida
                         if (posicoes[i,j] == "_X_" || posicoes[i,j] == "_O_") {
-                            Interface.Cores("Não é possível escolher essa casa, ela já está selecionada. \nAperte Enter para tentar novamente", ConsoleColor.Red);
+                            Interface.ICores("Não é possível escolher essa casa, ela já está selecionada. \nAperte Enter para tentar novamente", ConsoleColor.Red);
                             Console.ReadKey();
                             return false;
                         }
