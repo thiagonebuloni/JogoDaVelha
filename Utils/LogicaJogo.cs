@@ -11,8 +11,10 @@ namespace JogoDaVelha.Utils {
             // se não existirem jogadores registrados, cria 2 novos
             if (jogadores.Count() == 0)
             {    
-                Jogador.RegistrarJogador(jogadores);
-                Jogador.RegistrarJogador(jogadores);
+                Jogador.RegistrarJogador(jogadores, jogadores.Count());
+                Jogador.RegistrarJogador(jogadores, jogadores.Count());
+                indexJogadorAtivo1 = 0;
+                indexJogadorAtivo2 = 1;
             }
             else if ( jogadores.Count() == 1)
             {   // se existir apenas 1 jogador criado, cria o segundo
@@ -66,6 +68,12 @@ namespace JogoDaVelha.Utils {
                         {
                             Console.Write("Selecione o jogador(a) 2: ");
                             indexJogadorAtivo2 = (int.Parse(Console.ReadLine()!) - 1);
+                            if (indexJogadorAtivo1 == indexJogadorAtivo2)
+                            {
+                                Interface.ICores("Jogador(a) 2 deve ser diferente de jogador(a) 1.\nAperte qualquer tecla para continuar. ", ConsoleColor.Red);
+                                Console.ReadKey();
+                            }
+
                         }
                         catch (Exception)
                         {
@@ -75,6 +83,7 @@ namespace JogoDaVelha.Utils {
                         }
 
                     }
+                    Jogador.OrdenarJogadores(jogadores);
                     break;
                 }
                 

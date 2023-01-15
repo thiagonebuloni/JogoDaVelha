@@ -43,7 +43,7 @@ namespace JogoDaVelha {
                         LogicaJogo.Jogar(jogadores, fullPath);
                         break;
                     case 2:
-                        Jogador.RegistrarJogador(jogadores);
+                        Jogador.RegistrarJogador(jogadores, jogadores.Count());
                         break;
                     case 3:
                         Interface.IVerRanking(jogadores);

@@ -32,11 +32,11 @@ namespace JogoDaVelha.Utils
         }
 
 
-        public static void RegistrarJogador(List<Jogador> jogadores)
+        public static void RegistrarJogador(List<Jogador> jogadores, int numeroJogador)
         {
             Console.Clear();
             
-            Console.Write("Qual é o nome? ");
+            Console.Write($"Digite o nome do(a) jogador(a) {numeroJogador + 1}: ");
             string nomeJogador = Console.ReadLine()!;
 
             if (string.IsNullOrEmpty(nomeJogador))
@@ -57,7 +57,7 @@ namespace JogoDaVelha.Utils
             
             for (int i = 0; i < jogadores.Count() - 1; i++)
             {
-                for (int j = 1; j < jogadores.Count(); j++)
+                for (int j = i + 1; j < jogadores.Count(); j++)
                 {
                     if (jogadores[i].Vitorias < jogadores[j].Vitorias)
                     {
