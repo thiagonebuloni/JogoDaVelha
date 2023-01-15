@@ -44,7 +44,7 @@ namespace JogoDaVelha.Utils {
                 else Console.ForegroundColor = ConsoleColor.Green;
 
                 if (jogadores[i].NomeJogador.Length > 14) {
-                    Console.WriteLine($"{jogadores[i].NomeJogador}{tab}| {jogadores[i].Vitorias}\t| {jogadores[i].Derrotas}\t| {jogadores[i].Empates}");
+                    Console.WriteLine($"{jogadores[i].NomeJogador}{tab}| {jogadores[i].Vitorias}\t\t| {jogadores[i].Derrotas}\t\t| {jogadores[i].Empates}");
                 }
                 else if (jogadores[i].NomeJogador.Length < 8){
                     Console.WriteLine($"{jogadores[i].NomeJogador}{tab}\t| {jogadores[i].Vitorias}\t\t| {jogadores[i].Derrotas}\t\t| {jogadores[i].Empates}");

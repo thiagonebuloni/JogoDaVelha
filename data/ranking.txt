@@ -1,1 +1,1 @@
-[{"NomeJogador":"Jogador(a) 2","Vitorias":1,"Derrotas":0,"Empates":1},{"NomeJogador":"Jogador(a) 1","Vitorias":0,"Derrotas":1,"Empates":1},{"NomeJogador":"Thiago Nebuloni","Vitorias":1,"Derrotas":1,"Empates":1},{"NomeJogador":"Maria Venegas","Vitorias":1,"Derrotas":1,"Empates":1}]
+[{"NomeJogador":"Deh Britto Neb","Vitorias":8,"Derrotas":2,"Empates":0},{"NomeJogador":"Thiago Nebuloni","Vitorias":3,"Derrotas":9,"Empates":1},{"NomeJogador":"Tester","Vitorias":6,"Derrotas":0,"Empates":0},{"NomeJogador":"Maria Venegas","Vitorias":4,"Derrotas":3,"Empates":1}]

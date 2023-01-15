@@ -3,13 +3,10 @@ namespace JogoDaVelha.Utils {
     
     public class LogicaJogo {
 
-        public static void Jogar(List<Jogador> jogadores) {
+        public static void Jogar(List<Jogador> jogadores, string fullPath) {
             
-            
-            Console.Clear();
-
-            int indexJogadorAtivo1 = 0;
-            int indexJogadorAtivo2 = 1;
+            int indexJogadorAtivo1 = -1;
+            int indexJogadorAtivo2 = -1;
 
             // se não existirem jogadores registrados, cria 2 novos
             if (jogadores.Count() == 0)
@@ -18,22 +15,69 @@ namespace JogoDaVelha.Utils {
                 Jogador.RegistrarJogador(jogadores);
             }
             else if ( jogadores.Count() == 1)
-            { // se existir apenas 1 jogador criado, cria o segundo
+            {   // se existir apenas 1 jogador criado, cria o segundo
                 Jogador novoJogador = new Jogador("Jogador(a) 2", 0, 0, 0);
             }
-            else {      // seleciona jogadores já cadastrados
-                for (int i = 0; i < jogadores.Count(); i++) {
-                    if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    else Console.ForegroundColor = ConsoleColor.Green;
+            else    // seleciona jogadores já cadastrados
+            {
+                while (true)
+                {
+                
+                    while (indexJogadorAtivo1 < 0 || indexJogadorAtivo1 >= jogadores.Count())    // valida entrada para jogador 1
+                    {
+                        Console.Clear();
+                        for (int i = 0; i < jogadores.Count(); i++)
+                        {
+                            if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            else Console.ForegroundColor = ConsoleColor.Green;
 
-                    Console.WriteLine($"{i + 1} - {jogadores[i].NomeJogador}");
+                            Console.WriteLine($"{i + 1} - {jogadores[i].NomeJogador}");
+                        }
+                        Console.ForegroundColor = ConsoleColor.Green;
+
+                        try
+                        {
+                            Console.Write("Selecione o jogador(a) 1: ");
+                            indexJogadorAtivo1 = (int.Parse(Console.ReadLine()!) - 1);
+                        }
+                        catch (Exception)
+                        {
+                            Interface.ICores("Número de jogador inválido. Escolha novamente.\n", ConsoleColor.Red);
+                            Interface.ICores("Aperte qualquer tecla para continuar...", ConsoleColor.Red);
+                            Console.ReadKey();
+                        }
+                    }
+
+                    while (indexJogadorAtivo2 < 0 || indexJogadorAtivo2 >= jogadores.Count() || indexJogadorAtivo2 == indexJogadorAtivo1)    // valida entrada para jogador 2
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+
+                        Console.Clear();
+                        for (int i = 0; i < jogadores.Count(); i++)
+                        {
+                            if (i % 2 == 0) Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            else Console.ForegroundColor = ConsoleColor.Green;
+
+                            Console.WriteLine($"{i + 1} - {jogadores[i].NomeJogador}");
+                        }
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        
+                        try
+                        {
+                            Console.Write("Selecione o jogador(a) 2: ");
+                            indexJogadorAtivo2 = (int.Parse(Console.ReadLine()!) - 1);
+                        }
+                        catch (Exception)
+                        {
+                            Interface.ICores("Número de jogador inválido. Escolha novamente.\n", ConsoleColor.Red);
+                            Interface.ICores("Aperte qualquer tecla para continuar...", ConsoleColor.Red);
+                            Console.ReadKey();
+                        }
+
+                    }
+                    break;
                 }
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Selecione o jogador(a) 1: ");
-                indexJogadorAtivo1 = (int.Parse(Console.ReadLine()!) - 1);
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write("Selecione o jogador(a) 2: ");
-                indexJogadorAtivo2 = (int.Parse(Console.ReadLine()!) - 1);
+                
             }
 
 
@@ -104,7 +148,7 @@ namespace JogoDaVelha.Utils {
             }
             
             Jogador.OrdenarJogadores(jogadores);
-            ManipulaArquivo.AtualizaArquivo(jogadores);
+            ManipulaArquivo.AtualizaArquivo(jogadores, fullPath);
             
         }
 
