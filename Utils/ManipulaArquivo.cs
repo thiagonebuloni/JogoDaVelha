@@ -7,7 +7,7 @@ namespace JogoDaVelha.Utils {
     {
     
             public static string path = @"data/";
-            public static string file = @"ranking.txt";
+            public static string file = @"ranking.json";
             // public static string fullPath = System.IO.Path.Combine(path, file);
         public static void LeArquivo(List<Jogador> jogadores, string fullPath)
         {
@@ -37,6 +37,8 @@ namespace JogoDaVelha.Utils {
             // Lê arquivo e recupera ranking
             try
             {
+                if (!File.Exists(fullPath)) File.Create(fullPath);
+                
                 string jsonString = File.ReadAllText(fullPath);
 
                 if (!String.IsNullOrEmpty(jsonString))
@@ -69,11 +71,7 @@ namespace JogoDaVelha.Utils {
 
 
         public static void AtualizaArquivo(List<Jogador> jogadores, string fullPath)
-        {
-            // string path = @"data/";
-            // string file = @"ranking.txt";
-            // string fullPath = System.IO.Path.Combine(path, file);
-            
+        {            
             string jsonString = JsonSerializer.Serialize(jogadores);
             File.WriteAllText(fullPath, jsonString);
         }

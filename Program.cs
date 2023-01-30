@@ -14,7 +14,7 @@ namespace JogoDaVelha {
             List<Jogador> jogadores = new List<Jogador>();            
 
             string path = @"data/";
-            string file = @"ranking.txt";
+            string file = @"ranking.json";
             string fullPath = System.IO.Path.Combine(path, file);
             
             ManipulaArquivo.LeArquivo(jogadores, fullPath);

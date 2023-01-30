@@ -1,0 +1,2 @@
+1/15/2023 8:45:22 AM LeArquivo-File exists-Could not find file '/home/thiago/Documents/csharp/aulas/JogoDaVelha/data/ranking.json'.
+1/15/2023 8:48:09 AM LeArquivo-File exists-The process cannot access the file '/home/thiago/Documents/csharp/aulas/JogoDaVelha/data/ranking.json' because it is being used by another process.
